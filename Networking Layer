@@ -59,7 +59,7 @@ If one backend goes down, traffic automatically routes to the remaining healthy 
 A Load Balancer in OCI is essential for building reliable, scalable, and secure cloud-native applications. It simplifies management, enhances fault tolerance, and hides 
 infrastructure details from users, making it a best practice for any multi-instance deployment.
 
-_____________________________________________________________________________________________________________________________________________________________________________
+___________________________________________________________________________________________________________________________________________________________________________
 
 Here's a breakdown of the 7 layers:
 
@@ -119,12 +119,14 @@ It’s like a phone conversation where both people confirm that they hear each o
 In summary:
 The Network Layer finds the best path for data across networks using IP addresses.
 The Transport Layer ensures data gets to the right application, reliably and in order, using protocols like TCP and UDP.
-____________________________________________________________________________________________________________________________________________________________________________
+___________________________________________________________________________________________________________________________________________________________________________
 
 { Network Load Balancer }
 
 -> A Network Load Balancer (NLB) in OCI is a highly performant, low-latency load balancer that Operates at Layer 3/4 (network and transport layers) of the OSI model, 
 specifically handling TCP, UDP, and ICMP traffic.
+
+
 
 
 
