@@ -1,1 +1,2 @@
-
+Load Balancer : 
+A Load Balancer in OCI is a fully managed, highly available network service that automatically distributes incoming application traffic across multiple backend resources
