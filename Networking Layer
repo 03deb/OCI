@@ -1,3 +1,5 @@
+Networking Diagram -> https://k21academy.com/wp-content/uploads/2018/10/PublicPrivateSubnet_D2-e1603279823526.png
+
 { Load Balancer }
 
 A Load Balancer in OCI is a fully managed, highly available network service that automatically distributes incoming application traffic across multiple backend resources
@@ -126,12 +128,98 @@ ________________________________________________________________________________
 -> A Network Load Balancer (NLB) in OCI is a highly performant, low-latency load balancer that Operates at Layer 3/4 (network and transport layers) of the OSI model, 
 specifically handling TCP, UDP, and ICMP traffic.
 
+✅ Use Case Example (Real-World) :
+Scenario: Gaming Server Load Balancing
+Suppose you are running a multiplayer game server that uses UDP for fast communication between players.
+You deploy:
+-> 3 compute instances in OCI running your game backend (UDP-based)
+-> You want to distribute player traffic evenly across these instances
+
+Solution: Use a Network Load Balancer
+PLAYER → NLB (UDP port 9000) → Game Server 1 
+(UDP 9000)                   → Game Server 2                            
+(UDP 9000)                   → Game Server 3 
+
+Without NLB:
+-> Each player is assigned a specific game server’s IP and port.
+-> If a server fails, those players are disconnected and can’t reconnect automatically.
+
+Why Network LB here?
+-> HTTP Load Balancer (Layer 7) cannot handle UDP
+-> NLB handles it efficiently without inspecting the content
 
 
+Why is NLB Necessary?
+-> Essential for Non-HTTP Traffic: If your application uses TCP/UDP protocols (like databases, custom apps, or gaming servers), NLB is required since an application
+load balancer might not support or efficiently handle these protocols.
+-> Performance-Critical Environments: For scenarios demanding ultra-low latency and very high throughput, NLB is the best fit.
+-> Source IP Requirements: Some security or audit requirements demand that backend servers see the real client IP, which NLB provides.
+-> Simplicity: For straightforward, protocol-agnostic traffic distribution (no need for SSL offloading, path-based routing, etc.), NLB is simpler and more efficient.
 
 
+When to Use NLB in OCI
+-> For any workload that is not web-based (non-HTTP/HTTPS), such as databases, VoIP, custom TCP/UDP applications, and gaming.
+-> When ultra-low latency and high throughput are required.
+-> When backend applications require the client’s source IP.
+-> For applications needing to handle millions of concurrent connections.
 
 
+How is NLB Different from "Normal" (Application) Load Balancer?
+
+Feature                |	Network Load Balancer (NLB)       |	Application Load Balancer (ALB) (OCI LBaaS)
+------------------------------------------------------------------------------------------------------------
+OSI Layer	           |  Layer 4 (Transport/Network)           |	Layer 7 (Application)
+Supported Protocols    |  TCP, UDP, ICMP	                      | HTTP, HTTPS, WebSockets, SSL/TLS termination
+Traffic Routing	     |  Based on IP, port                     | Based on URL, Host, Cookies, Application data
+SSL Termination	     |  No         	                      | Yes
+Source IP Preservation |  Yes	                                  | No (unless using X-Forwarded-For header)
+Performance	           |  Very high, low latency	          | Moderate, higher processing due to application logic
+Health Checks	     |  Basic (TCP/UDP)	                      | Advanced (HTTP, HTTPS, path-based)
+Use Cases	           |  Non-HTTP workloads, gaming, VoIP      | Web apps, APIs, HTTPS termination, cookie-based routing
+
+
+____________________________________________________________________________________________________________________________________________________________________________
+
+{ Application Level Load Balancer (ALB)? }
+-> An Application Level Load Balancer operates at the Application Layer (Layer 7) of the OSI model. This means it can inspect and make decisions based on the content of the 
+application data (such as HTTP headers, cookies, URLs), not just on IP addresses and ports.
+
+In OCI and other clouds, this is often just called a "Load Balancer" or "Layer 7 Load Balancer."
+
+
+# Real-World Example: E-commerce Website
+Let’s say you run an online store like Flipkart.
+You have:
+-> One backend for product listing: /products
+-> One backend for shopping cart: /cart
+-> One backend for checkout: /checkout
+# Without Load Balancer:
+Users talk directly to one server — bad for reliability and scalability.
+# With Application-Level Load Balancer:
+User → HTTPS Request → Load Balancer
+      ├─> /products  → App Server 1
+      ├─> /cart      → App Server 2
+      └─> /checkout  → App Server 3
+
+Here the load balancer reads the URL and forwards traffic to the correct backend.
+
+# Key Features of Application Load Balancer
+-> Content-based Routing: Routes requests based on URL, host, HTTP headers, cookies, etc.
+-> SSL/TLS Termination: Can decrypt HTTPS traffic, offloading the work from backend servers.
+-> Session Persistence (Sticky Sessions): Can keep a user’s requests going to the same backend server.
+-> Advanced Health Checks: Can check specific URLs/endpoints for health, not just open ports.
+-> WebSocket Support: Handles modern web communication protocols.
+-> Rewrite/Redirect: Can modify headers or redirect requests.
+
+
+Why Use an Application Load Balancer?
+Flexibility: Route traffic based on application data (URLs, headers, cookies).
+Security: Centralized SSL certificate management and traffic termination.
+Health Monitoring: More precise health checks using HTTP responses.
+Scalability: Easily add or remove backend servers as demand changes.
+User Experience: Sticky sessions and content-based routing for better performance and reliability.
+
+_____________________________________________________________________________________________________________________________________________________________________________
 
 
 
